@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <title>注册</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>用户注册</h1>
+        <form method="post" class="card">
+            <label>用户名</label>
+            <input type="text" name="name" required>
+            <label>密码</label>
+            <input type="password" name="password" required>
+            <button type="submit">注册</button>
+        </form>
+        <a href="{{ url_for('login') }}" class="btn-link">已有账号？去登录</a>
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <ul class="flash">
+              {% for msg in messages %}
+                <li>{{ msg }}</li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+        {% endwith %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <title>管理员后台</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        .inline-form { display: inline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div style="display:flex;justify-content:space-between;align-items:center;"><h1 style="margin:0;">管理员后台 — 题目管理</h1><a href="{{ url_for('logout') }}" class="btn-link">退出</a></div>
+
+        <h2>现有题目</h2>
+        <table class="leaderboard">
+            <thead>
+                <tr><th>ID</th><th>题目</th><th>分值</th><th>操作</th></tr>
+            </thead>
+            <tbody>
+                {% for q in questions %}
+                <tr>
+                    <form method="post" action="{{ url_for('admin_update', qid=q.id) }}">
+                        <td>{{ q.id }}</td>
+                        <td>
+                            <input type="text" name="text" value="{{ q.text }}" required style="width:250px;">
+                            <input type="text" name="answer" placeholder="答案(明文)" required>
+                        </td>
+                        <td><input type="number" name="points" value="{{ q.points }}" required style="width:80px;"></td>
+                        <td>
+                            <button type="submit">更新</button>
+                    </form>
+                    <form method="post" action="{{ url_for('admin_delete', qid=q.id) }}" class="inline-form" onsubmit="return confirm('确认删除?');">
+                        <button type="submit">删除</button>
+                    </form>
+                        </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <h2>添加题目</h2>
+        <form method="post" action="{{ url_for('admin_add') }}" class="card">
+            <label>题目文本</label>
+            <input type="text" name="text" required>
+            <label>答案 (明文)</label>
+            <input type="text" name="answer" required>
+            <label>分值</label>
+            <input type="number" name="points" required>
+            <button type="submit">添加</button>
+        </form>
+
+        <a href="{{ url_for('leaderboard') }}" class="btn-link">查看排行榜</a>
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <ul class="flash">
+              {% for msg in messages %}
+                <li>{{ msg }}</li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+        {% endwith %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <title>题目列表</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        .header-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;}
+        .status-bar{margin-top:1rem;color:#fff;padding:0.6rem;border-radius:8px;}
+        .status-success{background:#28a745;}
+        .status-error{background:#dc3545;}
+        .notice-board{margin-top:1rem;background:#f7f7f7;padding:0.8rem;border-radius:8px;max-height:140px;overflow-y:auto;}
+        .notice-board h3{margin-top:0;font-size:1rem;}
+        .notice-item{margin:0.2rem 0;font-size:0.92rem;}
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header-bar">
+        <div>欢迎您：<strong>{{ user.name }}</strong> &nbsp;|&nbsp; 您的排名：<strong>{{ rank or '-' }}</strong> &nbsp;|&nbsp; 当前得分：<strong>{{ score }}</strong></div>
+        <div>
+            <a href="{{ url_for('leaderboard') }}" class="btn-link">排行榜</a> |
+            <a href="{{ url_for('logout') }}" class="btn-link">退出</a>
+        </div>
+    </div>
+
+    <h2>题目列表</h2>
+
+    {% for q in questions %}
+    <form method="post" action="{{ url_for('submit', qid=q.id) }}" class="question-form">
+        <label>{{ q.id }}. {{ q.text }}</label>
+        <input type="text" name="answer" placeholder="flag 格式 hubuctf{...}" {% if solved[q.id] %}disabled value="已通过"{% endif %}>
+        <button type="submit" {% if solved[q.id] %}disabled{% endif %}>提交</button>
+    </form>
+    {% endfor %}
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for msg in messages %}
+          <div class="status-bar {% if '正确' in msg %}status-success{% else %}status-error{% endif %}">{{ msg }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <div class="notice-board">
+        <h3>通知栏</h3>
+        {% for n in notices %}
+            <div class="notice-item">• {{ n['message'] }}</div>
+        {% else %}
+            <div class="notice-item">暂无通知</div>
+        {% endfor %}
+    </div>
+</div>
+</body>
+</html>
