@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <title>排行榜</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        .leaderboard-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+        .mini-leaderboard {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .mini-leaderboard h3 {
+            margin-top: 0;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .mini-item {
+            padding: 8px 0;
+            border-bottom: 1px solid #f5f5f5;
+            display: flex;
+            justify-content: space-between;
+        }
+        .recent-events {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .event-item {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>实时排行榜</h1>
+        
+        <div class="leaderboard-container">
+            <div>
+                <table class="leaderboard">
+                    <thead>
+                        <tr><th>排名</th><th>姓名</th><th>得分</th><th>最后提交时间</th></tr>
+                    </thead>
+                    <tbody>
+                        {% for row in rows %}
+                            <tr>
+                                <td>{{ loop.index }}</td>
+                                <td>{{ row['name'] }}</td>
+                                <td>{{ row['score'] or 0 }}</td>
+                                <td>{{ row['last_submit']|datetime_format }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                
+                <div class="recent-events">
+                    <h3>近期解题动态</h3>
+                    {% if events %}
+                        {% for event in events %}
+                            <div class="event-item">• {{ event['event'] }}</div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="event-item">暂无动态</div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div>
+                <div class="mini-leaderboard">
+                    <h3>一血王</h3>
+                    {% if first_blood_kings %}
+                        {% for king in first_blood_kings %}
+                            <div class="mini-item">
+                                <span>{{ king['name'] }}</span>
+                                <span>{{ king['count'] }}次</span>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="mini-item">暂无数据</div>
+                    {% endif %}
+                </div>
+                
+                <div class="mini-leaderboard">
+                    <h3>0解王</h3>
+                    {% if unique_solvers %}
+                        {% for solver in unique_solvers %}
+                            <div class="mini-item">
+                                <span>{{ solver['name'] }}</span>
+                                <span>{{ solver['count'] }}题</span>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="mini-item">暂无数据</div>
+                    {% endif %}
+                </div>
+                
+                <div class="mini-leaderboard">
+                    <h3>做题王</h3>
+                    {% if problem_solvers %}
+                        {% for solver in problem_solvers %}
+                            <div class="mini-item">
+                                <span>{{ solver['name'] }}</span>
+                                <span>{{ solver['count'] }}题</span>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="mini-item">暂无数据</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <a href="{{ url_for('quiz') }}" class="btn-link">返回答题</a>
+    </div>
+</body>
+</html>

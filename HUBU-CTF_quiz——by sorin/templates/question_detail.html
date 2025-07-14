@@ -1,0 +1,15 @@
+<!-- 新建文件: templates/question_detail.html -->
+<div>
+    <h2>{{ question.title }}</h2>
+    {% if question.description %}
+    <div class="question-description">
+        <p>{{ question.description }}</p>
+    </div>
+    {% endif %}
+    
+    <form method="post" action="{{ url_for('submit', qid=question.id) }}" class="question-form">
+        <label>请输入答案:</label>
+        <input type="text" name="answer" placeholder="flag 格式 hubuctf{...}" {% if solved %}disabled value="已通过"{% endif %} required>
+        <button type="submit" {% if solved %}disabled{% endif %}>提交</button>
+    </form>
+</div>
