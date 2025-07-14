@@ -1,0 +1,26 @@
+<div>
+    <h2>{{ question.title }}</h2>
+    {% if question.description %}
+    <div class="question-description">
+        <p>{{ question.description }}</p>
+    </div>
+    {% endif %}
+    
+    {% if question.attachment_name %}
+    <div class="attachment" style="margin: 10px 0;">
+        <a href="{{ url_for('download_attachment', qid=question.id) }}" style="display: inline-block; background: #007bff; color: white; padding: 5px 10px; border-radius: 4px; text-decoration: none;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" style="vertical-align: middle; margin-right: 5px;">
+                <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+                <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+            </svg>
+            下载附件: {{ question.attachment_name }}
+        </a>
+    </div>
+    {% endif %}
+    
+    <form method="post" action="{{ url_for('submit', qid=question.id) }}" class="question-form">
+        <label>请输入答案:</label>
+        <input type="text" name="answer" placeholder="flag 格式 hubuctf{...}" {% if solved %}disabled value="已通过"{% endif %} required>
+        <button type="submit" {% if solved %}disabled{% endif %}>提交</button>
+    </form>
+</div>
